@@ -1,13 +1,14 @@
 // O. Bittel
 // 22.09.2022
-package dictionary;
+
+package de.htwg.alda.dictionary;
 
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * Implementation of the Dictionary interface as AVL tree.
+ * Implementation of the de.htwg.alda.dictionary.Dictionary interface as AVL tree.
  * <p>
  * The entries are ordered using their natural ordering on the keys, 
  * or by a Comparator provided at set creation time, depending on which constructor is used. 

@@ -1,13 +1,14 @@
 /*
- * Test der verscheidenen Dictionary-Implementierungen
+ * Test der verscheidenen de.htwg.alda.dictionary.Dictionary-Implementierungen
  *
  * O. Bittel
  * 26.09.2022
  */
-package dictionary;
+
+package de.htwg.alda.dictionary;
 
 /**
- * Static test methods for different Dictionary implementations.
+ * Static test methods for different de.htwg.alda.dictionary.Dictionary implementations.
  * @author oliverbittel
  */
 public class DictionaryTest {
@@ -36,7 +37,7 @@ public class DictionaryTest {
 		Dictionary<String, String> dict = new BinaryTreeDictionary<>();
 		testDict(dict);
         
-        // Test für BinaryTreeDictionary mit prettyPrint 
+        // Test für de.htwg.alda.dictionary.BinaryTreeDictionary mit prettyPrint
         // (siehe Aufgabe 10; Programmiertechnik 2).
         // Pruefen Sie die Ausgabe von prettyPrint auf Papier nach.
         BinaryTreeDictionary<Integer, Integer> btd = new BinaryTreeDictionary<>();

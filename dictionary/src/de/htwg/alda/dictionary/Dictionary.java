@@ -1,7 +1,7 @@
 // O. Bittel
 // 26.09.2022
 
-package dictionary;
+package de.htwg.alda.dictionary;
 
 import java.util.Iterator;
 
