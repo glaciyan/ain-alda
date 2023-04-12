@@ -7,11 +7,16 @@ import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 public class HashDictionary<K extends Comparable<K>, V> implements Dictionary<K, V> {
+    private static final int DEF_CAPACITY = 7;
     private static final int LOAD_FACTOR = 2;
 
     private LinkedList<Entry<K, V>>[] data;
     private int size;
     private int modCount = 0;
+
+    public HashDictionary() {
+        this(DEF_CAPACITY);
+    }
 
     @SuppressWarnings("unchecked")
     public HashDictionary(int capacity) {
@@ -25,14 +30,17 @@ public class HashDictionary<K extends Comparable<K>, V> implements Dictionary<K,
         int index = hash(key);
         LinkedList<Entry<K, V>> list = data[index];
 
+        // init new list if none is present
         if (list == null) list = data[index] = new LinkedList<>();
 
+        // check if key is already present
         for (var e : list) {
             if (e.getKey().equals(key)) {
                 return e.setValue(value);
             }
         }
 
+        // increase size when too much load
         if (size >= data.length * LOAD_FACTOR) {
             var newData = new LinkedList[BigInteger.valueOf(data.length * 2L).nextProbablePrime().intValue()];
             copyTo(newData);
@@ -45,20 +53,6 @@ public class HashDictionary<K extends Comparable<K>, V> implements Dictionary<K,
 
         return null;
     }
-
-    private void copyTo(LinkedList<Entry<K, V>>[] dest) {
-        for (var e : this) {
-            insert(e, dest);
-        }
-    }
-
-    private void insert(Entry<K, V> entry, LinkedList<Entry<K, V>>[] dest) {
-        int index = hash(entry.getKey(), dest.length);
-        LinkedList<Entry<K, V>> list = dest[index];
-        if (list == null) list = dest[index] = new LinkedList<>();
-        list.push(entry);
-    }
-
 
     @Override
     public V search(K key) {
@@ -101,14 +95,21 @@ public class HashDictionary<K extends Comparable<K>, V> implements Dictionary<K,
             private Iterator<Entry<K, V>> linkedListIt;
 
             private void nextIterator() {
+                // when we have no iterator or when we cannot go further in our current
                 if (linkedListIt == null || !linkedListIt.hasNext()) {
+                    // reset iterator so it can be null when we have nothing left
                     linkedListIt = null;
+
+                    // stop overflow
                     while (index < data.length) {
+                        // we have a list on the index
                         if (data[index] != null) {
+                            // take its iterator
                             linkedListIt = data[index].iterator();
                             index++;
                             break;
                         }
+                        // continue looking
                         index++;
                     }
                 }
@@ -135,6 +136,19 @@ public class HashDictionary<K extends Comparable<K>, V> implements Dictionary<K,
         index = index % data.length;
 
         return index;
+    }
+
+    private void copyTo(LinkedList<Entry<K, V>>[] dest) {
+        for (var e : this) {
+            insert(e, dest);
+        }
+    }
+
+    private static <K, V> void insert(Entry<K, V> entry, LinkedList<Entry<K, V>>[] dest) {
+        int index = hash(entry.getKey(), dest.length);
+        LinkedList<Entry<K, V>> list = dest[index];
+        if (list == null) list = dest[index] = new LinkedList<>();
+        list.push(entry);
     }
 
     private static <K> int hash(K key, int m) {
