@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="DictionaryTest" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="de.htwg.alda.dictionary.DictionaryTest" />
+    <module name="dictionary" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
