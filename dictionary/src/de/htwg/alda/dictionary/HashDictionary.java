@@ -77,9 +77,7 @@ public class HashDictionary<K extends Comparable<K>, V> implements Dictionary<K,
         if (list == null || list.isEmpty())
             return null;
 
-        Entry<K, V> removed = list.pop((entry) -> {
-            return entry.getKey().compareTo(key) == 0;
-        });
+        Entry<K, V> removed = list.pop((entry) -> entry.getKey().compareTo(key) == 0);
         if (removed == null)
             return null;
         else {
