@@ -138,12 +138,7 @@ public class HashDictionary<K extends Comparable<K>, V> implements Dictionary<K,
     }
 
     private int hash(K key) {
-        int index = key.hashCode();
-        if (index < 0)
-            index = -index;
-        index = index % data.length;
-
-        return index;
+        return hash(key, data.length);
     }
 
     private void copyTo(LinkedList<Entry<K, V>>[] dest) {
