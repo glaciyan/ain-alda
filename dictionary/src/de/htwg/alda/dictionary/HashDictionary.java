@@ -100,29 +100,29 @@ public class HashDictionary<K extends Comparable<K>, V> implements Dictionary<K,
             private Iterator<Entry<K, V>> linkedListIt;
 
             private void nextIterator() {
-                // when we have no iterator or when we cannot go further in our current
-                if (linkedListIt == null || !linkedListIt.hasNext()) {
-                    // reset iterator so it can be null when we have nothing left
-                    linkedListIt = null;
+                // reset iterator, so it can be null when we have nothing left
+                linkedListIt = null;
 
-                    // stop overflow
-                    while (index < data.length) {
-                        // we have a list on the index
-                        if (data[index] != null) {
-                            // take its iterator
-                            linkedListIt = data[index].iterator();
-                            index++;
-                            break;
-                        }
-                        // continue looking
+                // stop overflow
+                while (index < data.length) {
+                    // we have a list on the index
+                    if (data[index] != null) {
+                        // take its iterator
+                        linkedListIt = data[index].iterator();
                         index++;
+                        break;
                     }
+                    // continue looking
+                    index++;
                 }
             }
 
             @Override
             public boolean hasNext() {
-                nextIterator();
+                // when we have no iterator or when we cannot go further in our current
+                if (linkedListIt == null || !linkedListIt.hasNext()) {
+                    nextIterator();
+                }
                 return linkedListIt != null && linkedListIt.hasNext();
             }
 
