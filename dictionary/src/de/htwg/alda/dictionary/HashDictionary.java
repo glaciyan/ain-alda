@@ -31,7 +31,8 @@ public class HashDictionary<K extends Comparable<K>, V> implements Dictionary<K,
         LinkedList<Entry<K, V>> list = data[index];
 
         // init new list if none is present
-        if (list == null) list = data[index] = new LinkedList<>();
+        if (list == null)
+            list = data[index] = new LinkedList<>();
 
         // check if key is already present
         for (var e : list) {
@@ -58,10 +59,12 @@ public class HashDictionary<K extends Comparable<K>, V> implements Dictionary<K,
     public V search(K key) {
         int index = hash(key);
         LinkedList<Entry<K, V>> list = data[index];
-        if (list == null || list.isEmpty()) return null;
+        if (list == null || list.isEmpty())
+            return null;
 
         for (Entry<K, V> e : list) {
-            if (e.getKey().compareTo(key) == 0) return e.getValue();
+            if (e.getKey().compareTo(key) == 0)
+                return e.getValue();
         }
 
         return null;
@@ -71,10 +74,14 @@ public class HashDictionary<K extends Comparable<K>, V> implements Dictionary<K,
     public V remove(K key) {
         int index = hash(key);
         LinkedList<Entry<K, V>> list = data[index];
-        if (list == null || list.isEmpty()) return null;
+        if (list == null || list.isEmpty())
+            return null;
 
-        Entry<K, V> removed = list.pop((entry) -> entry.getKey().equals(key));
-        if (removed == null) return null;
+        Entry<K, V> removed = list.pop((entry) -> {
+            return entry.getKey().compareTo(key) == 0;
+        });
+        if (removed == null)
+            return null;
         else {
             size--;
             modCount++;
@@ -123,8 +130,10 @@ public class HashDictionary<K extends Comparable<K>, V> implements Dictionary<K,
 
             @Override
             public Entry<K, V> next() {
-                if (modCount != expectedModCount) throw new ConcurrentModificationException();
-                if (!hasNext()) throw new NoSuchElementException();
+                if (modCount != expectedModCount)
+                    throw new ConcurrentModificationException();
+                if (!hasNext())
+                    throw new NoSuchElementException();
                 return linkedListIt.next();
             }
         };
@@ -132,7 +141,8 @@ public class HashDictionary<K extends Comparable<K>, V> implements Dictionary<K,
 
     private int hash(K key) {
         int index = key.hashCode();
-        if (index < 0) index = -index;
+        if (index < 0)
+            index = -index;
         index = index % data.length;
 
         return index;
@@ -147,13 +157,15 @@ public class HashDictionary<K extends Comparable<K>, V> implements Dictionary<K,
     private static <K, V> void insert(Entry<K, V> entry, LinkedList<Entry<K, V>>[] dest) {
         int index = hash(entry.getKey(), dest.length);
         LinkedList<Entry<K, V>> list = dest[index];
-        if (list == null) list = dest[index] = new LinkedList<>();
+        if (list == null)
+            list = dest[index] = new LinkedList<>();
         list.push(entry);
     }
 
     private static <K> int hash(K key, int m) {
         int index = key.hashCode();
-        if (index < 0) index = -index;
+        if (index < 0)
+            index = -index;
         index = index % m;
 
         return index;
@@ -244,8 +256,10 @@ public class HashDictionary<K extends Comparable<K>, V> implements Dictionary<K,
 
                 @Override
                 public T next() {
-                    if (modCount != expectedModCount) throw new ConcurrentModificationException();
-                    if (!hasNext()) throw new NoSuchElementException();
+                    if (modCount != expectedModCount)
+                        throw new ConcurrentModificationException();
+                    if (!hasNext())
+                        throw new NoSuchElementException();
 
                     var val = current.value;
                     current = current.next;
