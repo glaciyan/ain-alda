@@ -187,6 +187,7 @@ public class HashDictionary<K extends Comparable<K>, V> implements Dictionary<K,
             } else {
                 this.last.next = new Node<>(this.last, null, value);
                 this.last = this.last.next;
+                this.last.prev.next = this.last;
             }
 
             size++;
@@ -194,17 +195,21 @@ public class HashDictionary<K extends Comparable<K>, V> implements Dictionary<K,
         }
 
         public T pop(Predicate<T> condition) {
-            if (isEmpty()) return null;
-            Node<T> current = first;
-            do {
-                if (condition.test(current.value)) return removeNode(current);
-                current = current.next;
-            } while(current.hasNext());
+            if (isEmpty())
+                return null;
+
+            for (Node<T> node = first; node != null; node = node.next) {
+                if (condition.test(node.value))
+                    return removeNode(node);
+            }
 
             return null;
         }
 
         private T removeNode(Node<T> node) {
+            if (node == last) last = node.prev;
+            if (node == first) first = node.next;
+
             if (node.prev != null) {
                 node.prev.next = node.next;
             }
@@ -270,10 +275,6 @@ public class HashDictionary<K extends Comparable<K>, V> implements Dictionary<K,
                 this.prev = prev;
                 this.next = next;
                 this.value = value;
-            }
-
-            public boolean hasNext() {
-                return next != null;
             }
         }
     }
