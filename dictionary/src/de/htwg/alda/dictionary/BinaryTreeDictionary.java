@@ -3,6 +3,7 @@
 
 package de.htwg.alda.dictionary;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -65,11 +66,12 @@ public class BinaryTreeDictionary<K extends Comparable<K>, V> implements Diction
 
     @Override
     public V search(K key) {
-        return searchR(key, root).value;
+        var res = searchR(key, root);
+        return res == null ? null : res.value;
     }
 
     private Node<K, V> searchR(K key, Node<K, V> p) {
-        if (p == null) throw new NoSuchElementException();
+        if (p == null) return null;
         else if (key.compareTo(p.key) < 0) {
             return searchR(key, p.left);
         } else if (key.compareTo(p.key) > 0) {
@@ -81,14 +83,42 @@ public class BinaryTreeDictionary<K extends Comparable<K>, V> implements Diction
 
     @Override
     public V remove(K key) {
-        return null;
-//        setRoot(removeR(key, root));
-//        return oldValue;
+        setRoot(removeR(key, root));
+        modCount++;
+        return oldValue;
     }
 
-//    private Node<K, V> removeR(K key, Node<K, V> p) {
-//
-//    }
+    private Node<K, V> removeR(K key, Node<K, V> p) {
+        if (p == null) {
+            oldValue = null;
+        } else if (key.compareTo(p.key) < 0) {
+            p.setLeft(removeR(key, p.left));
+        } else if (key.compareTo(p.key) > 0) {
+            p.setRight(removeR(key, p.right));
+        } else {
+            // gefunden
+            size--;
+            oldValue = p.value;
+
+            if (p.left == null || p.right == null) {
+                p = (p.left != null) ? p.left : p.right;
+            } else {
+                var min = getMin(p.right);
+                p.key = min.key;
+                p.value = min.value;
+                p.setRight(removeR(p.key, p.right));
+            }
+        }
+
+        p = balance(p);
+        return p;
+    }
+
+    private Node<K, V> getMin(Node<K, V> p) {
+        while (p.left != null)
+            p = p.left;
+        return p;
+    }
 
     @Override
     public int size() {
@@ -97,7 +127,45 @@ public class BinaryTreeDictionary<K extends Comparable<K>, V> implements Diction
 
     @Override
     public Iterator<Entry<K, V>> iterator() {
-        return null;
+        return new Iterator<>() {
+            Node<K, V> p = (root != null) ? leftMostDescendant(root) : null;
+            final int expectedMod = modCount;
+
+            @Override
+            public boolean hasNext() {
+                return p != null;
+            }
+
+            @Override
+            public Entry<K, V> next() {
+                if (expectedMod != modCount) throw new ConcurrentModificationException();
+                if (!hasNext()) throw new NoSuchElementException();
+
+                var entry = p.asEntry();
+
+                if (p.right != null) {
+                    p = leftMostDescendant(p.right);
+                } else {
+                    p = parentOfLeftMostAncestor(p);
+                }
+
+                return entry;
+            }
+        };
+    }
+
+    private Node<K, V> leftMostDescendant(Node<K, V> p) {
+        while (p.left != null)
+            p = p.left;
+        return p;
+    }
+
+    private Node<K, V> parentOfLeftMostAncestor(Node<K, V> p) {
+        while (p.parent != null && p.parent.right == p) {
+            p = p.parent;
+        }
+
+        return p.parent;
     }
 
     /**
@@ -142,7 +210,7 @@ public class BinaryTreeDictionary<K extends Comparable<K>, V> implements Diction
             if (getBalance(p.right) >= 0) {
                 p = rotateLeft(p);
             } else {
-                p = rotateLeftRight(p);
+                p = rotateRightLeft(p);
             }
         }
         return p;
@@ -206,6 +274,10 @@ public class BinaryTreeDictionary<K extends Comparable<K>, V> implements Diction
             left = null;
             right = null;
             parent = null;
+        }
+
+        public Entry<K, V> asEntry() {
+            return new Entry<>(this.key, this.value);
         }
     }
 

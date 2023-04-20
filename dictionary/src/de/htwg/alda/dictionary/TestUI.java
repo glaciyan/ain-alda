@@ -51,6 +51,7 @@ public class TestUI {
 
         dict = switch (impl) {
             case "HashDictionary" -> new HashDictionary<>();
+            case "BinaryTree" -> new BinaryTreeDictionary<>();
             default -> new SortedArrayDictionary<>();
         };
 
