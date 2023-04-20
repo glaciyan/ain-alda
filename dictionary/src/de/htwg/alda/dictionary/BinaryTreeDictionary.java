@@ -36,21 +36,25 @@ public class BinaryTreeDictionary<K extends Comparable<K>, V> implements Diction
 
     @Override
     public V insert(K key, V value) {
-        root = insertR(key, value, root);
+        setRoot(insertR(key, value, root));
         modCount++;
         return oldValue;
     }
 
     private Node<K, V> insertR(K key, V value, Node<K, V> p) {
         if (p == null) {
+            // nicht gefunden, neues einfügen
             size++;
             p = new Node<>(key, value);
             oldValue = null;
         } else if (key.compareTo(p.key) < 0)
-            p.left = insertR(key, value, p.left);
+            // kleiner, links gehen
+            p.setLeft(insertR(key, value, p.left));
         else if (key.compareTo(p.key) > 0)
-            p.right = insertR(key, value, p.right);
-        else { // Schlüssel bereits vorhanden:
+            // größer, rechts gehen
+            p.setRight(insertR(key, value, p.right));
+        else {
+            // key gefunden, ersetzen
             oldValue = p.value;
             p.value = value;
         }
@@ -78,11 +82,17 @@ public class BinaryTreeDictionary<K extends Comparable<K>, V> implements Diction
     @Override
     public V remove(K key) {
         return null;
+//        setRoot(removeR(key, root));
+//        return oldValue;
     }
+
+//    private Node<K, V> removeR(K key, Node<K, V> p) {
+//
+//    }
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
@@ -140,8 +150,8 @@ public class BinaryTreeDictionary<K extends Comparable<K>, V> implements Diction
 
     private Node<K, V> rotateRight(Node<K, V> p) {
         Node<K, V> q = p.left;
-        p.left = q.right;
-        q.right = p;
+        p.setLeft(q.right);
+        q.setRight(p);
         p.height = Math.max(getHeight(p.left), getHeight(p.right)) + 1;
         q.height = Math.max(getHeight(q.left), getHeight(q.right)) + 1;
         return q;
@@ -149,21 +159,26 @@ public class BinaryTreeDictionary<K extends Comparable<K>, V> implements Diction
 
     private Node<K, V> rotateLeft(Node<K, V> p) {
         Node<K, V> q = p.right;
-        p.right = q.left;
-        q.left = p;
+        p.setRight(q.left);
+        q.setLeft(p);
         p.height = Math.max(getHeight(p.left), getHeight(p.right)) + 1;
         q.height = Math.max(getHeight(q.left), getHeight(q.right)) + 1;
         return q;
     }
 
     private Node<K, V> rotateLeftRight(Node<K, V> p) {
-        p.left = rotateLeft(p.left);
+        p.setLeft(rotateLeft(p.left));
         return rotateRight(p);
     }
 
     private Node<K, V> rotateRightLeft(Node<K, V> p) {
-        p.right = rotateRight(p.right);
+        p.setRight(rotateRight(p.right));
         return rotateLeft(p);
+    }
+
+    private void setRoot(Node<K, V> to) {
+        root = to;
+        if (root != null) root.parent = null;
     }
 
     static private class Node<K, V> {
@@ -173,6 +188,16 @@ public class BinaryTreeDictionary<K extends Comparable<K>, V> implements Diction
         Node<K, V> left;
         Node<K, V> right;
         Node<K, V> parent;
+
+        public void setLeft(Node<K, V> to) {
+            this.left = to;
+            if (this.left != null) this.left.parent = this;
+        }
+
+        public void setRight(Node<K, V> to) {
+            this.right = to;
+            if (this.right != null) this.right.parent = this;
+        }
 
         Node(K k, V v) {
             key = k;
