@@ -136,13 +136,13 @@ public class AdjacencyListDirectedGraph<V extends Comparable<? super V>> impleme
     @Override
     public Set<V> getPredecessorVertexSet(V v) {
         if (pred.containsKey(v)) return Collections.unmodifiableSet(pred.get(v).keySet());
-        else return null;
+        else return Collections.emptySet();
     }
 
     @Override
     public Set<V> getSuccessorVertexSet(V v) {
         if (succ.containsKey(v)) return Collections.unmodifiableSet(succ.get(v).keySet());
-        else return null;
+        else return Collections.emptySet();
     }
 
     @Override
