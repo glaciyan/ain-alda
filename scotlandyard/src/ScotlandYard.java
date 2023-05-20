@@ -3,6 +3,7 @@ import sim.SYSimulation;
 import java.awt.Color;
 import java.io.IOException;
 
+import directedGraph.*;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
