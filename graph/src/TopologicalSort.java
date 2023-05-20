@@ -1,9 +1,7 @@
 // O. Bittel;
 // 26.09.22
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Klasse zur Erstellung einer topologischen Sortierung.
@@ -20,7 +18,34 @@ public class TopologicalSort<V> {
 	 * @param g gerichteter Graph.
 	 */
 	public TopologicalSort(DirectedGraph<V> g) {
-        // ...
+		Map<V, Integer> inDegree = new HashMap<>();
+		Queue<V> q = new LinkedList<>();
+
+		g.getVertexSet().forEach(v -> {
+			inDegree.put(v, g.getInDegree(v));
+			if (inDegree.get(v) == 0) {
+				q.add(v);
+			}
+		});
+
+		while (!q.isEmpty()) {
+			V v = q.remove();
+			ts.add(v);
+
+			g.getSuccessorVertexSet(v).forEach(w -> {
+				int degree = inDegree.get(w);
+				degree--;
+				inDegree.put(w, degree);
+
+				if (degree == 0) {
+					q.add(w);
+				}
+			});
+		}
+
+		if (ts.size() != g.getVertexSet().size()) {
+			ts = null;
+		}
     }
     
 	/**
