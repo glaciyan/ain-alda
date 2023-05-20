@@ -1,4 +1,4 @@
-// O. Bittel;
+package directedGraph;// O. Bittel;
 // 26.09.22
 
 import java.io.File;
