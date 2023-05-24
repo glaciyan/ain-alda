@@ -4,10 +4,7 @@
 import directedGraph.*;
 import sim.SYSimulation;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 // ...
 
@@ -27,6 +24,8 @@ public class ShortestPath<V> {
     IndexMinPQ<V, Double> cand;    // Kandidaten als PriorityQueue PQ
     Heuristic<V> h;
     DirectedGraph<V> g;
+    List<V> shortestPath;
+    double distance;
 
     double runHeuristic(V u, V v) {
         return h == null ? 0 : h.estimatedCost(u, v);
@@ -89,13 +88,15 @@ public class ShortestPath<V> {
 
         while (!cand.isEmpty()) {
             V v = cand.removeMin();
-            if (h != null && v == g) return; // Ziel
+            System.out.printf("Besuche Knoten %s mit d = %f%n", v.toString(), dist.get(v));
 
-            System.out.printf("Besuche Knoten %d mit d = %f", v, cand.get(v));
+            if (h != null && v == g) {
+                build(s, g);
+                return; // Ziel
+            }
 
             this.g.getSuccessorVertexSet(v).forEach(w -> {
                 if (dist.get(w) == Double.POSITIVE_INFINITY) {
-                    System.out.print(" got better");
                     pred.put(w, v);
                     dist.put(w, dist.get(v) + this.g.getWeight(v, w));
                     cand.add(w, dist.get(w) + runHeuristic(w, g));
@@ -105,9 +106,27 @@ public class ShortestPath<V> {
                     cand.change(w, dist.get(w) + runHeuristic(w, g));
                 }
             });
-
-            System.out.println();
         }
+
+        build(s, g);
+    }
+
+    private void build(V s, V g) {
+        List<V> temp = new LinkedList<>();
+        V c = g;
+
+        while (c != null) {
+            temp.add(c);
+            c = pred.get(c);
+        }
+
+        shortestPath = new ArrayList<>();
+        // reverse
+        for (int i = temp.size() - 1; i >= 0; i--) {
+            shortestPath.add(temp.get(i));
+        }
+
+        distance = dist.get(temp.get(0));
     }
 
     /**
@@ -118,10 +137,7 @@ public class ShortestPath<V> {
      * @throws IllegalArgumentException falls kein kürzester Weg berechnet wurde.
      */
     public List<V> getShortestPath() {
-        if (cand.size() > 0) {
-            List<V> l = new ArrayList<>();
-        }
-        return null;
+        return shortestPath;
     }
 
     /**
@@ -132,8 +148,7 @@ public class ShortestPath<V> {
      * @throws IllegalArgumentException falls kein kürzester Weg berechnet wurde.
      */
     public double getDistance() {
-        // ...
-        return 0.0;
+        return distance;
     }
 
 }
