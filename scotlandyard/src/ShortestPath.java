@@ -43,6 +43,13 @@ public class ShortestPath<V> {
      *          dem Dijkstra-Verfahren gesucht.
      */
     public ShortestPath(DirectedGraph<V> g, Heuristic<V> h) {
+        this.h = h;
+        this.g = g;
+
+        reset();
+    }
+
+    private void reset() {
         dist = new HashMap<>();
         pred = new HashMap<>();
         cand = new IndexMinPQ<>();
@@ -51,9 +58,6 @@ public class ShortestPath<V> {
             dist.put(v, Double.POSITIVE_INFINITY);
             pred.put(v, null);
         });
-
-        this.h = h;
-        this.g = g;
     }
 
     /**
@@ -89,6 +93,9 @@ public class ShortestPath<V> {
         while (!cand.isEmpty()) {
             V v = cand.removeMin();
             System.out.printf("Besuche Knoten %s mit d = %f%n", v.toString(), dist.get(v));
+            if (sim != null) {
+                sim.visitStation((Integer) v);
+            }
 
             if (h != null && v == g) {
                 buildSolution(g);
