@@ -91,7 +91,7 @@ public class ShortestPath<V> {
             System.out.printf("Besuche Knoten %s mit d = %f%n", v.toString(), dist.get(v));
 
             if (h != null && v == g) {
-                build(s, g);
+                buildSolution(g);
                 return; // Ziel
             }
 
@@ -108,10 +108,10 @@ public class ShortestPath<V> {
             });
         }
 
-        build(s, g);
+        buildSolution(g);
     }
 
-    private void build(V s, V g) {
+    private void buildSolution(V g) {
         List<V> temp = new LinkedList<>();
         V c = g;
 
