@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 
 /**
@@ -54,7 +55,10 @@ public class ScotlandYard {
                 default -> throw new IllegalStateException("Unexpected value: " + name);
             };
 
-            sy_graph.addEdge(f, s, weight);
+            if (weight < sy_graph.getWeight(f, s)) {
+                sy_graph.addEdge(f, s, weight);
+                sy_graph.addEdge(s, f, weight);
+            }
         }
 
         // Test, ob alle Kanten eingelesen wurden:
@@ -98,7 +102,7 @@ public class ScotlandYard {
         DirectedGraph<Integer> syGraph = getGraph();
 
         Heuristic<Integer> syHeuristic = null; // Dijkstra
-        //Heuristic<Integer> syHeuristic = getHeuristic(); // A*
+//        Heuristic<Integer> syHeuristic = getHeuristic(); // A*
 
         ShortestPath<Integer> sySp = new ShortestPath<Integer>(syGraph, syHeuristic);
 
@@ -122,8 +126,8 @@ public class ScotlandYard {
         sySp.setSimulator(sim);
         sim.startSequence("Shortest path from 1 to 173");
 
-        //sySp.searchShortestPath(65,157); // 9.0
-        //sySp.searchShortestPath(1,175); //25.0
+        sySp.searchShortestPath(65, 157); // 9.0
+        sySp.searchShortestPath(1, 175); //25.0
 
         sySp.searchShortestPath(1, 173); //22.0
         // bei Heuristik-Faktor von 1/10 wird nicht der optimale Pfad produziert.
@@ -161,12 +165,26 @@ class ScotlandYardHeuristic implements Heuristic<Integer> {
     }
 
     public ScotlandYardHeuristic() throws FileNotFoundException {
-        // ...
+        coord = new TreeMap<>();
+        Scanner in = new Scanner(new File("ScotlandYard_Knoten.txt"));
+
+        while (in.hasNext()) {
+            String line = in.nextLine();
+            Scanner lS = new Scanner(line);
+
+            int f = lS.nextInt();
+            int s = lS.nextInt();
+            int t = lS.nextInt();
+
+            this.coord.put(f, new Point(s, t));
+        }
     }
 
     public double estimatedCost(Integer u, Integer v) {
-        // ...
-        return 0.0;
+        Point vp = coord.get(u);
+        Point wp = coord.get(v);
+
+        return Math.sqrt((vp.x-wp.x)*(vp.x-wp.x) + (vp.y-wp.y)*(vp.y-wp.y)) * 1/30;
     }
 }
 

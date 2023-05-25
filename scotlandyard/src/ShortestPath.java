@@ -45,8 +45,6 @@ public class ShortestPath<V> {
     public ShortestPath(DirectedGraph<V> g, Heuristic<V> h) {
         this.h = h;
         this.g = g;
-
-        reset();
     }
 
     private void reset() {
@@ -87,6 +85,7 @@ public class ShortestPath<V> {
      * @param g Zielknoten
      */
     public void searchShortestPath(V s, V g) {
+        reset();
         dist.put(s, 0.0);
         cand.add(s, 0.0 + runHeuristic(s, g));
 
@@ -97,7 +96,7 @@ public class ShortestPath<V> {
                 sim.visitStation((Integer) v);
             }
 
-            if (h != null && v == g) {
+            if (h != null && v.equals(g)) {
                 buildSolution(g);
                 return; // Ziel
             }

@@ -76,6 +76,7 @@ public class AdjacencyListDirectedGraph<V extends Comparable<? super V>> impleme
 
     @Override
     public boolean addVertex(V v) {
+//        var first = succ.computeIfAbsent(v, k -> new TreeMap<>());
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
