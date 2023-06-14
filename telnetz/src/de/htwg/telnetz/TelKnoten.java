@@ -9,7 +9,25 @@ public class TelKnoten {
         this.y = y;
     }
 
-    public double distanceTo(TelKnoten that) {
+    public int distanceTo(TelKnoten that) {
         return Math.abs(this.x - that.x) + Math.abs(this.y - that.y);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TelKnoten telKnoten = (TelKnoten) o;
+
+        if (x != telKnoten.x) return false;
+        return y == telKnoten.y;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = x;
+        result = 31 * result + y;
+        return result;
     }
 }
