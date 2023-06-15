@@ -87,9 +87,9 @@ public class TelNet {
 
         StdDraw.setPenColor(Color.RED);
         mb.forEach(t -> {
-            StdDraw.line((double) t.from.x /xx, (double)t.from.y/yy, (double) t.to.x/xx, (double) t.from.y/yy);
-            StdDraw.line((double) t.to.x/xx, (double) t.from.y/yy, (double) t.to.x/xx, (double) t.to.y/yy);
-//            StdDraw.line((double) t.from.x /xx, (double)t.from.y/yy, (double) t.to.x/xx, (double) t.to.y/yy);
+//            StdDraw.line((double) t.from.x /xx, (double)t.from.y/yy, (double) t.to.x/xx, (double) t.from.y/yy);
+//            StdDraw.line((double) t.to.x/xx, (double) t.from.y/yy, (double) t.to.x/xx, (double) t.to.y/yy);
+            StdDraw.line((double) t.from.x /xx, (double)t.from.y/yy, (double) t.to.x/xx, (double) t.to.y/yy);
         });
 
         StdDraw.setPenColor(Color.BLUE);

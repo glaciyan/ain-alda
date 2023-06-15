@@ -6,6 +6,7 @@ import static de.htwg.telnetz.MyArrays.inRange;
 
 public class UnionFind {
     private final int[] parents;
+    private int size;
 
     /**
      * Legt eine neue Union-Find-Struktur mit der Partitionierung <pre>{{0}, {1}, ..., {n-1}}</pre> an.
@@ -15,6 +16,7 @@ public class UnionFind {
     public UnionFind(int n) {
         parents = new int[n];
         Arrays.fill(parents, -1);
+        size = n;
     }
 
     /**
@@ -33,6 +35,7 @@ public class UnionFind {
         }
 
         parents[a] = rep;
+        size--;
     }
 
     /**
@@ -54,6 +57,6 @@ public class UnionFind {
      * @return Anzahl der Mengen.
      */
     public int size() {
-        return (int) Arrays.stream(parents).filter(a -> a == -1).count();
+        return size;
     }
 }
