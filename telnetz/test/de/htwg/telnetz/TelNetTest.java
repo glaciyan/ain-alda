@@ -2,6 +2,8 @@ package de.htwg.telnetz;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 public class TelNetTest {
     @Test
     void net() {
@@ -13,5 +15,7 @@ public class TelNetTest {
         telNet.addTelKnoten(6,2);
         telNet.addTelKnoten(7,4);
         telNet.addTelKnoten(6,7);
+
+        assertFalse(telNet.addTelKnoten(6, 7));
     }
 }
